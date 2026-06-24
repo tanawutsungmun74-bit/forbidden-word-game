@@ -17,7 +17,7 @@
                 <img src="https://cdn.phototourl.com/free/2026-05-29-a5ba99cf-a059-4e1d-88da-57481a1f6972.png" alt="Party Game" class="w-full h-full object-cover">
             </div>
 
-            <h1 class="text-4xl font-black text-center text-emerald-400 mb-6 tracking-wide">🚫 เกมคำต้องห้าม By ENG</h1>
+            <h1 class="text-4xl font-black text-center text-emerald-400 mb-6 tracking-wide">🚫 เกมคำต้องห้าม</h1>
             <div class="space-y-5">
                 <div>
                     <label class="block text-sm font-medium text-slate-400 mb-2">ชื่อผู้เล่นของคุณ</label>
@@ -38,7 +38,7 @@
         <div id="screen-game" class="hidden">
             <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-4 mb-6 gap-4">
                 <div class="space-y-1">
-                    <div class="text-xs uppercase tracking-wider text-slate-400">ROOM ID (ส่งรหัสนี้ให้เพื่อน)</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-400">ROOM ID</div>
                     <div class="flex items-center gap-3">
                         <div id="display-roomcode" class="text-2xl font-mono font-black text-emerald-400 select-all">กำลังเริ่มเกม</div>
                         
@@ -50,7 +50,7 @@
                             🚪 ออกจากห้อง
                         </button>
                     </div>
-                    <div class="text-sm text-slate-400 mt-1">Boss ประจำเกม: <span id="display-bossname" class="text-white font-bold">-</span></div>
+                    <div class="text-sm text-slate-400 mt-1">Headห้อง: <span id="display-bossname" class="text-white font-bold">-</span></div>
                 </div>
                 <div class="text-right">
                     <div id="timer-box" class="hidden text-3xl font-mono font-black bg-slate-900/80 text-white px-5 py-2 rounded-xl border border-slate-700">05:00</div>
@@ -59,19 +59,19 @@
             </div>
 
             <div id="area-countdown" class="hidden text-center py-20 animate-pulse">
-                <h2 class="text-3xl font-bold text-amber-400 uppercase tracking-widest mb-4">เตรียมชูหน้าจอให้เพื่อนดู!</h2>
+                <h2 class="text-3xl font-bold text-amber-400 uppercase tracking-widest mb-4">เตรียมปิดหน้าจอใไม่ห้เพื่อนดู!</h2>
                 <div id="countdown-number" class="text-9xl font-black font-mono text-amber-500">5</div>
             </div>
 
             <div id="area-play-zone">
                 <div id="msg-waiting" class="text-center py-16 text-slate-400 space-y-3">
                     <div class="text-5xl animate-spin inline-block">⏳</div>
-                    <p class="text-xl font-medium">อยู่ในหน้ารอ... รอให้บอสกดเริ่มเกม</p>
+                    <p class="text-xl font-medium">รอเริ่มเกม...</p>
                 </div>
 
                 <!-- แผงควบคุมเฉพาะบอสเจ้าของห้อง -->
                 <div id="boss-panel" class="hidden mb-8 p-5 bg-indigo-950/40 border border-indigo-800 rounded-xl space-y-4">
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider">🛠️ แผงควบคุมสำหรับบอส (คุณร่วมเล่นด้วยในรอบนี้)</h3>
+                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider">🛠️ แผงควบคุมHeadห้อง</h3>
                     
                     <div id="boss-time-selector" class="flex items-center gap-3 bg-slate-900 p-3 rounded-lg border border-slate-700 w-fit">
                         <label class="text-sm font-medium text-slate-300">⏱️ ตั้งเวลาเล่นรอบนี้:</label>
@@ -95,7 +95,7 @@
                 <div id="my-word-card" class="hidden max-w-sm mx-auto bg-slate-900 p-6 rounded-2xl border-2 border-dashed border-slate-700 text-center mb-8 shadow-xl">
                     <span id="my-word-label" class="text-xs font-bold uppercase tracking-widest text-slate-400">คำต้องห้ามที่คุณห้ามพูด</span>
                     <div id="my-word" class="text-5xl font-black text-amber-400 my-3 tracking-wide">❓❓❓</div>
-                    <p id="my-word-subtext" class="text-xs text-rose-400 font-medium">* ห้ามแอบมองเด็ดขาด ให้หันหน้าจอไม่ให้เพื่อนดู *</p>
+                    <p id="my-word-subtext" class="text-xs text-rose-400 font-medium">* ห้ามแอบมองเด็ดขาด *</p>
                 </div>
 
                 <h3 id="grid-title" class="text-lg font-bold text-slate-300 uppercase tracking-wider mb-4">📋 คำต้องห้ามของเพื่อนรอบวง</h3>
