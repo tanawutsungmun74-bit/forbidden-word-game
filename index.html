@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เกมคำต้องห้าม - Ultimate Party Edition</title>
+    <title>เกมคำต้องห้าม - Ultimate Party Edition (Active Boss)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
@@ -11,6 +11,7 @@
 
     <div id="main-card" class="w-full max-w-4xl bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700 transition-all duration-500">
         
+        <!-- หน้าจอ Login / สร้างห้อง / เข้าร่วมห้อง -->
         <div id="screen-login" class="max-w-md mx-auto py-4">
             <div class="w-full h-44 rounded-xl overflow-hidden mb-6 border border-slate-700 shadow-md">
                 <img src="https://cdn.phototourl.com/free/2026-05-29-a5ba99cf-a059-4e1d-88da-57481a1f6972.png" alt="Party Game" class="w-full h-full object-cover">
@@ -23,16 +24,17 @@
                     <input id="input-name" type="text" placeholder="กรอกชื่อเล่นสั้นๆ" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4 pt-2">
-                    <button onclick="createRoom()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold p-4 rounded-xl shadow-lg transition transform active:scale-95">👑 สร้างห้อง (BOSS)</button>
-                    <button onclick="showJoinField()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-4 rounded-xl shadow-lg transition transform active:scale-95">🏃 เข้าร่วมห้อง</button>
+                    <button id="btn-action-create" onclick="createRoom()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold p-4 rounded-xl shadow-lg transition transform active:scale-95">👑 สร้างห้อง (BOSS)</button>
+                    <button id="btn-action-showjoin" onclick="showJoinField()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-4 rounded-xl shadow-lg transition transform active:scale-95">🏃 เข้าร่วมห้อง</button>
                 </div>
                 <div id="join-field" class="hidden space-y-3 pt-4 border-t border-slate-700">
-                    <input id="input-roomcode" type="text" placeholder="ใส่รหัสห้องจากบอส (เช่น FW-XXXX)" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-center text-xl font-mono font-bold tracking-widest text-emerald-400 outline-none uppercase">
-                    <button onclick="joinRoom()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black p-4 rounded-xl">ยืนยันเข้าร่วมเกม</button>
+                    <input id="input-roomcode" type="text" placeholder="ใส่รหัสห้องจากบอส (เช่น S12345)" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-center text-xl font-mono font-bold tracking-widest text-emerald-400 outline-none uppercase">
+                    <button id="btn-action-join" onclick="joinRoom()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black p-4 rounded-xl transition transform active:scale-95">ยืนยันเข้าร่วมเกม</button>
                 </div>
             </div>
         </div>
 
+        <!-- หน้าจอห้องเกมหลัก -->
         <div id="screen-game" class="hidden">
             <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-4 mb-6 gap-4">
                 <div class="space-y-1">
@@ -67,8 +69,9 @@
                     <p class="text-xl font-medium">อยู่ในหน้ารอ... รอให้บอสกดเริ่มเกม</p>
                 </div>
 
+                <!-- แผงควบคุมเฉพาะบอสเจ้าของห้อง -->
                 <div id="boss-panel" class="hidden mb-8 p-5 bg-indigo-950/40 border border-indigo-800 rounded-xl space-y-4">
-                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider">🛠️ แผงควบคุมสำหรับบอส (คุณคือผู้คุมกฎ)</h3>
+                    <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-wider">🛠️ แผงควบคุมสำหรับบอส (คุณร่วมเล่นด้วยในรอบนี้)</h3>
                     
                     <div id="boss-time-selector" class="flex items-center gap-3 bg-slate-900 p-3 rounded-lg border border-slate-700 w-fit">
                         <label class="text-sm font-medium text-slate-300">⏱️ ตั้งเวลาเล่นรอบนี้:</label>
@@ -88,13 +91,14 @@
                     </div>
                 </div>
 
+                <!-- การ์ดคำต้องห้ามส่วนตัว (ซ่อนคำของตัวเอง) -->
                 <div id="my-word-card" class="hidden max-w-sm mx-auto bg-slate-900 p-6 rounded-2xl border-2 border-dashed border-slate-700 text-center mb-8 shadow-xl">
                     <span id="my-word-label" class="text-xs font-bold uppercase tracking-widest text-slate-400">คำต้องห้ามที่คุณห้ามพูด</span>
                     <div id="my-word" class="text-5xl font-black text-amber-400 my-3 tracking-wide">❓❓❓</div>
                     <p id="my-word-subtext" class="text-xs text-rose-400 font-medium">* ห้ามแอบมองเด็ดขาด ให้หันหน้าจอไม่ให้เพื่อนดู *</p>
                 </div>
 
-                <h3 id="grid-title" class="text-lg font-bold text-slate-300 uppercase tracking-wider mb-4">📋 คำต้องห้ามของเพื่อน</h3>
+                <h3 id="grid-title" class="text-lg font-bold text-slate-300 uppercase tracking-wider mb-4">📋 คำต้องห้ามของเพื่อนรอบวง</h3>
                 <div id="players-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
             </div>
         </div>
@@ -111,10 +115,7 @@
             ["ไป", "กลับ", "รถ", "เรือ", "เครื่องบิน", "รถไฟ", "บีทีเอส", "ใต้ดิน", "ตั๋ว", "ทาง", "ขับ", "ขี่", "ซ้อน", "โบก", "รอ", "ป้าย", "สถานี", "ท่าเรือ", "สนามบิน", "เลน", "ไฟแดง", "ไฟเขียว", "หลง", "ติด", "ช้า", "เร็ว", "ซิ่ง", "เบรก", "จอด", "เติมนํ้ามัน", "ชาร์จ", "แผนที่", "จีพีเอส", "กระเป๋า", "เป้", "ทางด่วน", "โค้ง", "ตรง", "เลี้ยว", "ถึง"],
             ["กิน", "นอน", "นั่ง", "ยืน", "เดิน", "วิ่ง", "ตื่น", "อาบน้ำ", "แต่งตัว", "คุย", "เมาท์", "ฟัง", "ดู", "เล่น", "คิด", "รัก", "ชอบ", "เกลียด", "โกรธ", "เหงา", "เศร้า", "สุข", "ยิ้ม", "หัวเราะ", "ร้องไห้", "เหนื่อย", "ท้อ", "สู้", "ทำ", "ใช้", "จ่าย", "ซื้อ", "หา", "เจอ", "พลาด", "จำ", "ลืม", "รอ", "เริ่ม", "โต"],
             ["บ้าน", "ห้อง", "นอน", "ครัว", "ส้วม", "เตียง", "หมอน", "ผ้าห่ม", "มุ้ง", "ตู้", "โต๊ะ", "เก้าอี้", "ไฟ", "พัดลม", "แอร์", "ทีวี", "ตู้เย็น", "เตา", "หม้อ", "กระทะ", "จาน", "ชาม", "ช้อน", "ส้อม", "แก้ว", "นํ้า", "ผ้า", "ไม้กวาด", "ถู", "ล้าง", "เช็ด", "ซัก", "ตาก", "พับ", "สวน", "ประตู", "หน้าต่าง", "พื้น", "รั้ว", "กุญแจ"],
-            ["เออ", "เฮ้ย", "เนี่ย", "นั่นดิ", "จริง", "ใช่ไหม", "หรอ", "ปะ", "เอาดีๆ", "แก", "คุณ", "มึง", "กู", "ช่างมัน", "ชิลชิล", "แป๊บนะ", "โอเค", "อุยกู", "ว้าว", "อุ๊ย", "อ้าว", "เอ้า", "เง็ง", "แป้ก", "จึ้ง", "ปัง", "บูด", "ขำ", "ฮา", "ตลก", "เคลียร์", "จบ", "ไปกัน", "เอาไง", "ว่าไง", "จัดไป", "ใจเย็น", "สุดจัด", "เฉย", "บาย"],
-            ["คน", "สัตว์", "สิ่งของ", "ต้นไม้", "ดอกไม้", "ดิน", "น้ำ", "ลม", "ไฟ", "ฟ้า", "ฝน", "แดด", "มืด", "สว่าง", "ร้อน", "หนาว", "อุ่น", "เย็น", "สูง", "ต่ำ", "สั้น", "ยาว", "ใหญ่", "เล็ก", "หนัก", "เบา", "หนา", "บาง", "กว้าง", "แคบ", "เร็ว", "ช้า", "ใหม่", "เก่า", "ดี", "แย่", "ถูก", "แพง", "ขาว", "ดำ"],
-            ["เค", "งง", "ละ", "เหรอ", "ยังไง", "ทำไม", "แบบ", "คือ", "แล้ว", "งั้น", "เลิศ", "แรง", "นอย", "จอย", "เซ็ง", "เซ็งเป็ด", "แย่", "จัง", "พัง" ,"มั่ว", "ลวง", "หลอก", "โม้", "เพ้อ", "ตื่น", "หลอน", "เท", "มูฟออน", "เข้าใจ", "เคลียร์","ขอบใจ", "คิดดู", "ดูดิ", "ฟังนะ", "ว้าย", "โอ๊ย"],
-            ["หนัง", "ตั๋ว", "บัตร", "รอบ", "โรง", "จอ", "เบาะ", "เก้าอี้", "ป๊อปคอร์น", "น้ำ", "ขนม", "คิว", "จอง", "ซื้อ", "แอป", "เช็ก", "แถว", "โซน", "หน้า", "หลัง", "เต็ม", "ว่าง", "มืด", "ไฟ", "แอร์", "หนาว", "เสียง", "ลำโพง", "ซับ", "พากย์", "สปอยล์", "อิน", "ร้องไห้", "ขำ", "จบ"]
+            ["เออ", "เฮ้ย", "เนี่ย", "นั่นดิ", "จริง", "ใช่ไหม", "หรอ", "ปะ", "เอาดีๆ", "แก", "คุณ", "มึง", "กู", "ช่างมัน", "ชิลชิล", "แป๊บนะ", "โอเค", "อุยกู", "ว้าว", "อุ๊ย", "อ้าว", "เอ้า", "เง็ง", "แป้ก", "จึ้ง", "ปัง", "บูด", "ขำ", "ฮา", "ตลก", "เคลียร์", "จบ", "ไปกัน", "เอาไง", "ว่าไง", "จัดไป", "ใจเย็น", "สุดจัด", "เฉย", "บาย"]
         ];
 
         let peer = null;
@@ -128,13 +129,16 @@
 
         function showJoinField() { document.getElementById('join-field').classList.remove('hidden'); }
 
-        // 👑 1. ฟังก์ชันสร้างห้อง (สำหรับบอส)
+        // 👑 1. สร้างห้อง (เวอร์ชันบอสร่วมเล่น และรหัสห้อง S + เลข 5 หลัก)
         function createRoom() {
             myName = document.getElementById('input-name').value.trim();
             if(!myName) return alert('กรุณากรอกชื่อของคุณก่อนครับ');
+            
+            document.getElementById('btn-action-create').disabled = true;
             myRole = 'boss';
 
-            const randomRoomId = "FW-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+            // เจนรหัสห้องขึ้นต้นด้วย S ตามด้วยเลขสุ่ม 5 หลัก (เช่น S10293)
+            const randomRoomId = "S" + Math.floor(10000 + Math.random() * 90000);
             peer = new Peer(randomRoomId);
 
             peer.on('open', (id) => {
@@ -148,11 +152,25 @@
                 document.getElementById('btn-leave-room').classList.add('hidden');
 
                 gameState.bossName = myName;
+                
+                // ยัดบอสเข้าไปเป็นหนึ่งในผู้เล่นด้วยไอดีของตนเอง
+                gameState.players[id] = { id: id, name: myName + " (บอส)", word: "", isDead: false, isRevealed: false, gameResult: "" };
+                
                 updateUI();
             });
 
             peer.on('connection', (conn) => {
+                // [แก้บั๊กชื่อซ้ำ/หลุดเอ๋อ] ตรวจสอบ Connection เดิม ถ้าเคยมีผูกกับ Peer ID นี้อยู่แล้ว ให้ตัดออกก่อนรับสายใหม่
+                connections = connections.filter(c => {
+                    if (c.peer === conn.peer) {
+                        c.close();
+                        return false;
+                    }
+                    return true;
+                });
+
                 connections.push(conn);
+                
                 conn.on('data', (data) => {
                     if(data.type === 'join') {
                         gameState.players[conn.peer] = { id: conn.peer, name: data.name, word: "", isDead: false, isRevealed: false, gameResult: "" };
@@ -162,11 +180,33 @@
                     if(data.type === 'leave') {
                         removePlayer(conn.peer);
                     }
+                    // รับคำสั่งกดตกรอบที่ส่งมาจากลูกบ้าน
+                    if(data.type === 'actionEliminate') {
+                        if(gameState.players[data.targetId]) {
+                            gameState.players[data.targetId].isDead = true;
+                            broadcastState();
+                            updateUI();
+                        }
+                    }
+                    // รับคำสั่งตัดสินถูก/ผิดที่ส่งมาจากลูกบ้านช่วงหมดเวลา
+                    if(data.type === 'actionJudge') {
+                        if(gameState.players[data.targetId]) {
+                            if(data.result === 'correct') {
+                                gameState.players[data.targetId].isRevealed = true;
+                                gameState.players[data.targetId].gameResult = "correct";
+                            } else {
+                                gameState.players[data.targetId].isDead = true;
+                                gameState.players[data.targetId].isRevealed = true;
+                                gameState.players[data.targetId].gameResult = "wrong";
+                            }
+                            broadcastState();
+                            updateUI();
+                        }
+                    }
                 });
                 
-                conn.on('close', () => {
-                    removePlayer(conn.peer);
-                });
+                conn.on('close', () => { removePlayer(conn.peer); });
+                conn.on('error', () => { removePlayer(conn.peer); });
             });
         }
 
@@ -179,28 +219,45 @@
             }
         }
 
-        // ❌ ฟังก์ชันปิดห้องถาวร (เฉพาะบอส)
+        // 👞 บอสกดเตะผู้เล่นรายคน (ใช้ได้เฉพาะช่วงหน้ารอ Waiting Lobby)
+        function bossKickPlayer(peerId) {
+            if(myRole !== 'boss') return;
+            if(peerId === peer.id) return alert('คุณไม่สามารถเตะตัวเองได้ครับ');
+            
+            const targetPlayer = gameState.players[peerId];
+            if(!targetPlayer) return;
+
+            if(confirm(`คุณต้องการเตะคุณ "${targetPlayer.name}" ออกจากห้องใช่หรือไม่?`)) {
+                const targetConn = connections.find(c => c.peer === peerId);
+                if(targetConn && targetConn.open) {
+                    targetConn.send({ type: 'roomDestroyed' }); // สั่งให้ลูกบ้านฝั่งนั้นเคลียร์ตัวเองเคลียร์จอ
+                    setTimeout(() => targetConn.close(), 200);
+                }
+                removePlayer(peerId);
+            }
+        }
+
         function bossDestroyRoom() {
             if(!confirm('คุณแน่ใจใช่ไหมที่จะ "ปิดห้องเกมนี้" ? ผู้เล่นทุกคนจะถูกเด้งออกทันที')) return;
-            
             clearInterval(timerInterval);
             connections.forEach(conn => {
-                if(conn.open) {
-                    conn.send({ type: 'roomDestroyed' });
-                }
+                if(conn.open) conn.send({ type: 'roomDestroyed' });
             });
-
             setTimeout(() => {
                 if(peer) peer.destroy();
                 window.location.reload();
             }, 500);
         }
 
-        // 🏃 2. ฟังก์ชันเข้าร่วมห้อง (สำหรับคนเล่น)
+        // 🏃 2. เข้าร่วมห้อง (สำหรับผู้เล่นทั่วไป)
         function joinRoom() {
             myName = document.getElementById('input-name').value.trim();
             const targetRoomId = document.getElementById('input-roomcode').value.trim().toUpperCase();
             if(!myName || !targetRoomId) return alert('กรุณากรอกชื่อและรหัสห้องให้ครบถ้วน');
+            
+            // [แก้บั๊กชื่อเบิ้ล] ล็อกปุ่มป้องกันผู้เล่นกดย้ำๆ ระหว่างทำการ Handshake เชื่อมต่อ
+            document.getElementById('btn-action-join').disabled = true;
+            document.getElementById('btn-action-join').innerText = "กำลังเชื่อมต่อ...";
             myRole = 'player';
 
             peer = new Peer(); 
@@ -224,7 +281,7 @@
                         updateUI();
                     }
                     if(data.type === 'roomDestroyed') {
-                        alert('👑 บอสได้ทำการปิดห้องเกมนี้เรียบร้อยแล้ว!');
+                        alert('🚪 คุณถูกเตะออกจากห้อง หรือบอสได้ทำการปิดห้องเกมนี้แล้วครับ!');
                         window.location.reload();
                     }
                 });
@@ -236,7 +293,9 @@
             });
 
             peer.on('error', (err) => {
-                alert('หารหัสห้องนี้ไม่พบ กรุณาเช็ครหัสห้องจากบอสอีกครั้งครับ');
+                alert('หารหัสห้องนี้ไม่พบ กรุณาเช็ครหัสห้องใหม่อีกครั้งครับ');
+                document.getElementById('btn-action-join').disabled = false;
+                document.getElementById('btn-action-join').innerText = "ยืนยันเข้าร่วมเกม";
             });
         }
 
@@ -258,54 +317,51 @@
             if(myRole !== 'boss') return;
             selectedSeconds = parseInt(document.getElementById('select-duration').value);
             gameState.maxSeconds = selectedSeconds;
-            
             let min = Math.floor(selectedSeconds / 60);
             gameState.timer = `${min < 10 ? "0"+min : min}:00`;
-            
             broadcastState();
             updateUI();
         }
 
-        // 👑 ฟังก์ชันเตะคนพูดคำต้องห้ามให้ตกรอบ (เฉพาะบอสกดได้ระหว่างเกม)
-        function killPlayer(playerId) {
-            if(myRole !== 'boss') return;
-            if(gameState.players[playerId]) {
-                gameState.players[playerId].isDead = true; 
+        // 📲 ฟังก์ชันส่วนกลางสำหรับการส่งคำสั่งกด Action ของทุกคนรอบวงไปยังเครื่องบอส (Server บอสประมวลผล)
+        function sendActionToHost(actionObj) {
+            if(myRole === 'boss') {
+                // ถ้าบอสเป็นคนคลิกกดบนหน้าจอตัวเอง ให้ประมวลผลโดยตรงภายในเครื่องได้เลย
+                if(actionObj.type === 'actionEliminate') {
+                    if(gameState.players[actionObj.targetId]) gameState.players[actionObj.targetId].isDead = true;
+                }
+                if(actionObj.type === 'actionJudge') {
+                    if(gameState.players[actionObj.targetId]) {
+                        if(actionObj.result === 'correct') {
+                            gameState.players[actionObj.targetId].isRevealed = true;
+                            gameState.players[actionObj.targetId].gameResult = "correct";
+                        } else {
+                            gameState.players[actionObj.targetId].isDead = true;
+                            gameState.players[actionObj.targetId].isRevealed = true;
+                            gameState.players[actionObj.targetId].gameResult = "wrong";
+                        }
+                    }
+                }
                 broadcastState();
                 updateUI();
+            } else {
+                // ถ้าผู้เล่นคนอื่นเป็นคนกด ให้ยิงคำสั่งไปบอกเครื่องบอสสะท้อนการอัปเดตกลับมา
+                if(connToBoss && connToBoss.open) {
+                    connToBoss.send(actionObj);
+                }
             }
         }
 
-        // 👑 ฟังก์ชันตัดสินใจตอนหมดเวลา: ตอบถูก (เฉพาะบอส)
-        function bossJudgeCorrect(playerId) {
-            if(myRole !== 'boss') return;
-            if(gameState.players[playerId]) {
-                gameState.players[playerId].isRevealed = true;
-                gameState.players[playerId].gameResult = "correct";
-                broadcastState();
-                updateUI();
-            }
-        }
-
-        // 👑 ฟังก์ชันตัดสินใจตอนหมดเวลา: ตอบผิด/ตกรอบ (เฉพาะบอส)
-        function bossJudgeWrong(playerId) {
-            if(myRole !== 'boss') return;
-            if(gameState.players[playerId]) {
-                gameState.players[playerId].isDead = true;
-                gameState.players[playerId].isRevealed = true;
-                gameState.players[playerId].gameResult = "wrong";
-                broadcastState();
-                updateUI();
-            }
-        }
-
-        // 3. ฟังก์ชันอัปเดตการแสดงผลหน้าจอทั้งหมด
+        // 3. ฟังก์ชันเรนเดอร์อัปเดตหน้าจอทั้งหมด
         function updateUI() {
             document.getElementById('display-bossname').innerText = gameState.bossName;
             document.getElementById('timer-box').innerText = gameState.timer;
             
             const playersArr = Object.values(gameState.players);
             document.getElementById('player-count').innerText = `ผู้เล่นในห้อง: ${playersArr.length} คน`;
+
+            const currentPeerId = peer ? peer.id : null;
+            const me = gameState.players[currentPeerId];
 
             if(gameState.status === 'waiting') {
                 toggleTheme('game-lobby');
@@ -328,22 +384,18 @@
                 document.getElementById('timer-box').classList.remove('hidden');
                 if(myRole === 'boss') document.getElementById('boss-time-selector').classList.add('hidden');
                 
-                if(myRole === 'player') {
-                    const me = gameState.players[peer.id];
-                    if(me) {
-                        document.getElementById('my-word-card').classList.remove('hidden');
-                        if(me.isDead) {
-                            // 🔍 แสดงคำต้องห้ามให้เจ้าตัวเห็นทันทีเมื่อตกรอบระหว่างเกม
-                            document.getElementById('my-word-label').innerText = "💀 คุณตกรอบแล้ว! คำต้องห้ามของคุณคือ:";
-                            document.getElementById('my-word').className = "text-5xl font-black text-rose-500 my-3 tracking-wide";
-                            document.getElementById('my-word').innerText = me.word;
-                            document.getElementById('my-word-subtext').innerText = "รอบหน้าเอาใหม่นะค๊าบพี่บ่าว!";
-                        } else {
-                            document.getElementById('my-word-label').innerText = "คำต้องห้ามที่คุณห้ามพูด";
-                            document.getElementById('my-word').className = "text-5xl font-black text-amber-400 my-3 tracking-wide";
-                            document.getElementById('my-word').innerText = "❓❓❓"; 
-                            document.getElementById('my-word-subtext').innerText = "* ห้ามแอบก้มมองเด็ดขาด ให้หันหน้าจอไม่ให้เพื่อนดู *";
-                        }
+                if(me) {
+                    document.getElementById('my-word-card').classList.remove('hidden');
+                    if(me.isDead) {
+                        document.getElementById('my-word-label').innerText = "💀 คุณตกรอบแล้ว! คำต้องห้ามของคุณคือ:";
+                        document.getElementById('my-word').className = "text-5xl font-black text-rose-500 my-3 tracking-wide";
+                        document.getElementById('my-word').innerText = me.word;
+                        document.getElementById('my-word-subtext').innerText = "รอบหน้าเอาใหม่นะค๊าบพี่บ่าว!";
+                    } else {
+                        document.getElementById('my-word-label').innerText = "คำต้องห้ามที่คุณห้ามพูด";
+                        document.getElementById('my-word').className = "text-5xl font-black text-amber-400 my-3 tracking-wide";
+                        document.getElementById('my-word').innerText = "❓❓❓"; 
+                        document.getElementById('my-word-subtext').innerText = "* ห้ามแอบก้มมองเด็ดขาด ให้หันหน้าจอไม่ให้เพื่อนดู *";
                     }
                 }
             } 
@@ -351,63 +403,56 @@
                 toggleTheme('game-timeout'); 
                 document.getElementById('timer-box').innerText = "💥 หมดเวลา!";
                 
-                if(myRole === 'player') {
-                    const me = gameState.players[peer.id];
-                    if(me) {
-                        document.getElementById('my-word-card').classList.remove('hidden');
-                        if(me.isDead || me.isRevealed) {
-                            // แสดงผลเฉลยบนหน้าจอผู้เล่นตามสเตตัสที่บอสเลือกกดตอนจบเกม
-                            if(me.gameResult === "correct") {
-                                document.getElementById('my-word-label').innerText = "🎉 ยินดีด้วยคุณรอดและตอบถูก! คำของคุณคือ:";
-                                document.getElementById('my-word').className = "text-5xl font-black text-emerald-400 my-3 tracking-wide";
-                            } else {
-                                document.getElementById('my-word-label').innerText = "💀 จบเกม! คำต้องห้ามของคุณคือ:";
-                                document.getElementById('my-word').className = "text-5xl font-black text-rose-500 my-3 tracking-wide";
-                            }
-                            document.getElementById('my-word').innerText = me.word;
-                            document.getElementById('my-word-subtext').innerText = "บอสได้ทำการเฉลยคำเรียบร้อยแล้ว";
+                if(me) {
+                    document.getElementById('my-word-card').classList.remove('hidden');
+                    if(me.isDead || me.isRevealed) {
+                        if(me.gameResult === "correct") {
+                            document.getElementById('my-word-label').innerText = "🎉 ยินดีด้วยคุณรอดและตอบถูก! คำของคุณคือ:";
+                            document.getElementById('my-word').className = "text-5xl font-black text-emerald-400 my-3 tracking-wide";
                         } else {
-                            document.getElementById('my-word-label').innerText = "⏱️ หมดเวลาแล้ว! รออภิปรายรอบวง";
-                            document.getElementById('my-word').className = "text-5xl font-black text-amber-400 my-3 tracking-wide";
-                            document.getElementById('my-word').innerText = "❓❓❓";
-                            document.getElementById('my-word-subtext').innerText = "รอให้บอสตัดสินใจผลลัพธ์ของคำคุณ";
+                            document.getElementById('my-word-label').innerText = "💀 จบเกม! คำต้องห้ามของคุณคือ:";
+                            document.getElementById('my-word').className = "text-5xl font-black text-rose-500 my-3 tracking-wide";
                         }
+                        document.getElementById('my-word').innerText = me.word;
+                        document.getElementById('my-word-subtext').innerText = "สรุปผลคำเรียบร้อยแล้ว";
+                    } else {
+                        document.getElementById('my-word-label').innerText = "⏱️ หมดเวลาแล้ว! รออภิปรายรอบวง";
+                        document.getElementById('my-word').className = "text-5xl font-black text-amber-400 my-3 tracking-wide";
+                        document.getElementById('my-word').innerText = "❓❓❓";
+                        document.getElementById('my-word-subtext').innerText = "รอให้เพื่อนๆ ช่วยกันกดโหวตตัดสินผลลัพธ์คำของคุณ";
                     }
                 }
             }
 
-            drawGrid(playersArr);
+            drawGrid(playersArr, currentPeerId);
         }
 
-        function drawGrid(players) {
+        // ฟังก์ชันวาดตารางคนเล่นรอบวง (ดักสิทธิ์การมองเห็นและสลับปุ่มตามสถานะเกม)
+        function drawGrid(players, currentPeerId) {
             const grid = document.getElementById('players-grid');
             grid.innerHTML = '';
             
             players.forEach(p => {
-                const isMe = p.id === (peer ? peer.id : null);
+                const isMe = p.id === currentPeerId;
                 let textWord = "⏳ หน้ารอ";
                 
-                // ตรวจสอบการแสดงข้อความบนการ์ดในตารางรอบวง
                 if(gameState.status === 'playing' || gameState.status === 'timeout') {
                     if(p.isDead && gameState.status === 'playing') {
-                        // ระหว่างเกมถ้าตกรอบ ให้คนอื่นเห็นเป็นคำเฉลยไปเลย
                         textWord = `💀 ${p.word}`;
                     } else if(gameState.status === 'timeout') {
                         if(p.isRevealed) {
                             if(p.gameResult === "correct") textWord = `🎉 ${p.word} (ถูก)`;
                             else textWord = `💀 ${p.word} (ผิด)`;
                         } else {
-                            // ถ้ายังไม่เฉลยตอนหมดเวลา บอสและคนอื่นยังคงเห็นคำปกติ ยกเว้นเจ้าตัว
-                            textWord = (isMe && myRole !== 'boss') ? "❓❓❓" : p.word;
+                            // มองเห็นคำของเพื่อนทุกคนยกเว้นคำของตนเอง
+                            textWord = isMe ? "❓❓❓" : p.word;
                         }
                     } else {
-                        textWord = (isMe && myRole !== 'boss') ? "❓❓❓" : p.word;
+                        textWord = isMe ? "❓❓❓" : p.word;
                     }
                 }
 
                 const card = document.createElement('div');
-                
-                // เลือกสไตล์การ์ด
                 let cardBg = 'bg-slate-900 border-slate-800';
                 let textWordColor = 'text-emerald-400 font-black';
                 
@@ -430,24 +475,32 @@
                     </div>
                 `;
 
-                // ปุ่มควบคุมของบอสในแต่ละช่วงเกม
-                if(myRole === 'boss') {
-                    // 1. ระหว่างเกมปกติ: แสดงปุ่มเตะตกรอบ
-                    if(gameState.status === 'playing' && !p.isDead) {
+                // 🔘 แสดงปุ่มกดจัดการต่างๆ ใต้การ์ดเพื่อน (ต้องไม่ใช่การ์ดของตัวเอง)
+                if(!isMe) {
+                    // 1. ช่วง Lobby: บอสเจ้าของห้องเห็นปุ่มเตะคนออกได้
+                    if(gameState.status === 'waiting' && myRole === 'boss') {
                         innerHTMLContent += `
-                            <button onclick="killPlayer('${p.id}')" class="mt-3 w-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-1.5 rounded-lg transition transform active:scale-95 shadow">
+                            <button onclick="bossKickPlayer('${p.id}')" class="mt-3 w-full bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white text-xs font-bold py-1.5 rounded-lg transition border border-slate-600/50 transform active:scale-95 shadow">
+                                👞 เตะออก
+                            </button>
+                        `;
+                    }
+                    // 2. ช่วงเริ่มเล่นเกม: ทุกคนสามารถกดปุ่ม "ตกรอบ" ให้เพื่อนได้
+                    else if(gameState.status === 'playing' && !p.isDead) {
+                        innerHTMLContent += `
+                            <button onclick="sendActionToHost({type: 'actionEliminate', targetId: '${p.id}'})" class="mt-3 w-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-1.5 rounded-lg transition transform active:scale-95 shadow">
                                 💀 กดตกรอบ
                             </button>
                         `;
                     }
-                    // 2. ช่วงหมดเวลา: แสดงปุ่ม "ตอบถูก" และ "ตอบผิด" สำหรับคนที่ยังรอดอยู่และยังไม่ถูกเฉลย
+                    // 3. ช่วงหมดเวลา: ปุ่มตกรอบเปลี่ยนเป็นปุ่ม "ถูก" และ "ผิด" ให้ทุกคนกดโหวตตัดสินกันได้เอง
                     else if(gameState.status === 'timeout' && !p.isDead && !p.isRevealed) {
                         innerHTMLContent += `
                             <div class="grid grid-cols-2 gap-2 mt-3">
-                                <button onclick="bossJudgeCorrect('${p.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-black py-1.5 rounded-lg transition transform active:scale-95 shadow">
+                                <button onclick="sendActionToHost({type: 'actionJudge', targetId: '${p.id}', result: 'correct'})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-black py-1.5 rounded-lg transition transform active:scale-95 shadow">
                                     ✅ ถูก
                                 </button>
-                                <button onclick="bossJudgeWrong('${p.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-black py-1.5 rounded-lg transition transform active:scale-95 shadow">
+                                <button onclick="sendActionToHost({type: 'actionJudge', targetId: '${p.id}', result: 'wrong'})" class="bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-black py-1.5 rounded-lg transition transform active:scale-95 shadow">
                                     ❌ ผิด
                                 </button>
                             </div>
@@ -547,8 +600,8 @@
                 body.className = "min-h-screen font-sans flex items-center justify-center p-4 bg-rose-800 transition-colors duration-500";
                 card.className = "w-full max-w-4xl bg-slate-900/95 text-white rounded-2xl p-6 border border-rose-500/30 backdrop-blur-sm shadow-2xl";
             } else {
-                body.className = "min-h-screen font-sans text-slate-100 flex items-center justify-center p-4 bg-slate-900 transition-colors duration-500";
-                card.className = "w-full max-w-4xl bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl";
+                body.className = "bg-slate-900 min-h-screen font-sans text-slate-100 flex items-center justify-center p-4 transition-colors duration-500";
+                card.className = "w-full max-w-4xl bg-slate-800 rounded-2xl shadow-2xl p-6 border border-slate-700 transition-all duration-500";
             }
         }
     </script>
